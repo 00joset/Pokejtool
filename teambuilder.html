@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeBuilder (JM)</title>
+    <script type="module">
+        import { pokemones } from "./pokedex.js";
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const pokemonInputs = document.querySelectorAll('.pokemon-input');
+            const datalist = document.getElementById("pokemon-list");
+            
+            Object.keys(pokemones).forEach(nombre => {
+                let option = document.createElement("option");
+                option.value = nombre;
+                datalist.appendChild(option);
+            });
+
+            pokemonInputs.forEach(input => {
+                input.addEventListener("input", function() {
+                    const pokemonName = this.value;
+                    const typesDiv = document.getElementById(`types-${this.id}`);
+                    if (pokemones[pokemonName]) {
+                        typesDiv.textContent = `Tipos: ${pokemones[pokemonName].join(", ")}`;
+                    } else {
+                        typesDiv.textContent = "";
+                    }
+                });
+            });
+
+            document.querySelector("form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const params = new URLSearchParams();
+                pokemonInputs.forEach((input, index) => {
+                    if (input.value && pokemones[input.value]) {
+                        params.append(`pokemon${index + 1}`, input.value);
+                    }
+                });
+                window.open(`debilidades.html?${params.toString()}`, '_blank', 'width=800,height=600');
+            });
+        });
+    </script>
+</head>
+<body>
+    <a href="index.html">volver al menu</a>
+    <h1>Construye tu equipo de Pokémon</h1>
+
+    <label for="team-name">Nombre del equipo:</label>
+    <input type="text" id="team-name" placeholder="Ingresa el nombre del equipo">
+    <br><br>
+
+    <form>
+        <datalist id="pokemon-list"></datalist>
+
+        <label for="pokemon1">Pokemon #1:</label>
+        <input list="pokemon-list" class="pokemon-input" id="pokemon1" name="pokemon1">
+        <div class="pokemon-types" id="types-pokemon1"></div>
+        <br><br>
+
+        <label for="pokemon2">Pokemon #2:</label>
+        <input list="pokemon-list" class="pokemon-input" id="pokemon2" name="pokemon2">
+        <div class="pokemon-types" id="types-pokemon2"></div>
+        <br><br>
+
+        <label for="pokemon3">Pokemon #3:</label>
+        <input list="pokemon-list" class="pokemon-input" id="pokemon3" name="pokemon3">
+        <div class="pokemon-types" id="types-pokemon3"></div>
+        <br><br>
+
+        <label for="pokemon4">Pokemon #4:</label>
+        <input list="pokemon-list" class="pokemon-input" id="pokemon4" name="pokemon4">
+        <div class="pokemon-types" id="types-pokemon4"></div>
+        <br><br>
+
+        <label for="pokemon5">Pokemon #5:</label>
+        <input list="pokemon-list" class="pokemon-input" id="pokemon5" name="pokemon5">
+        <div class="pokemon-types" id="types-pokemon5"></div><br><br>
+
+        <label for="pokemon6">Pokemon #6:</label>
+        <input list="pokemon-list" class="pokemon-input" id="pokemon6" name="pokemon6">
+        <div class="pokemon-types" id="types-pokemon6"></div><br><br>
+
+        <input type="submit" value="Ver Coberturas">
+    </form>
+
+    <br>
+    <button onclick="guardarEquipo()">Guardar Equipo</button>
+    <button onclick="exportarEquipo()">Exportar Equipo</button>
+    <input type="file" id="importarArchivo" onchange="importarEquipo(event)">
+    <button onclick="cargarEquipo()">Cargar Equipo Guardado</button>
+    <p id="archivoUbicacion"></p>
+
+    <script>
+        function guardarEquipo() {
+            const equipo = [];
+            document.querySelectorAll('.pokemon-input').forEach(input => {
+                if (input.value) {
+                    equipo.push(input.value);
+                }
+            });
+            const teamName = document.getElementById('team-name').value || "Equipo sin nombre";
+            const equipoData = { nombre: teamName, pokemones: equipo };
+            localStorage.setItem('equipoPokemon', JSON.stringify(equipoData));
+            alert("Equipo guardado exitosamente");
+        }
+
+        function cargarEquipo() {
+            const equipoData = JSON.parse(localStorage.getItem('equipoPokemon')) || { nombre: "", pokemones: [] };
+            document.getElementById('team-name').value = equipoData.nombre;
+            document.querySelectorAll('.pokemon-input').forEach((input, index) => {
+                input.value = equipoData.pokemones[index] || "";
+            });
+        }
+
+        function exportarEquipo() {
+            const equipoData = JSON.parse(localStorage.getItem('equipoPokemon')) || { nombre: "", pokemones: [] };
+            const blob = new Blob([JSON.stringify(equipoData)], { type: "application/json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = equipoData.nombre.replace(/\s+/g, '_') + "_equipo.json";
+            link.click();
+            document.getElementById("archivoUbicacion").textContent = "Archivo guardado en Descargas como " + link.download;
+        }
+
+        function importarEquipo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const equipoData = JSON.parse(e.target.result);
+                localStorage.setItem('equipoPokemon', JSON.stringify(equipoData));
+                cargarEquipo();
+                document.getElementById("archivoUbicacion").textContent = "Equipo importado desde: " + file.name;
+            };
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>

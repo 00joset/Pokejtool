@@ -1,0 +1,89 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1e1e2f;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #ffcc00;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background: #2a2a3a;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    width: 280px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card h2 {
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.weakness { border: 2px solid red; color: #ff4c4c; }
+.resistance { border: 2px solid yellow; color: #e0e062; }
+.immunity { border: 2px solid blue; color: #4c9bff; }
+.neutral { border: 2px solid white; color: #bebebe; }
+
+.type-box {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.tierra { background-color: #e3c274; }
+.acero { background-color: #a7a7a7; }
+.volador { background-color: #a890ea; }
+.electrico { background-color: yellow; }
+.agua { background-color: #6890f0; }
+.planta { background-color: #7ac84f; }
+.fuego { background-color: #ff4500; }
+.hielo { background-color: #97d8d7; }
+.roca { background-color: #b5a03a; }
+.dragon { background-color: #7036f5; }
+.psiquico { background-color: #ff53f4; }
+.lucha { background-color: #ff0000; }
+.bicho { background-color: #a8b918; }
+.siniestro { background-color: #6e5748; }
+.fantasma { background-color: #6a5acd; }
+.veneno { background-color: #800080; }
+.ninguna { background-color: #555555; }
+
+button {
+    margin-top: 20px;
+    padding: 12px 18px;
+    background-color: #ffcc00;
+    color: #1e1e2f;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #e6b800;
+}

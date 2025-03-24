@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>coberturas</title>
+    <link rel="stylesheet" href="Dbstyle.css">
+</head>
+<body>
+    <h1>Debilidades del Equipo de Pokémon</h1>
+    <div id="pokemonInfo" class="container"></div>
+    <br>
+    <button onclick="cerrarVentana()">Volver al Team Builder</button>
+
+    <script type="module">
+        import { pokemones } from "./pokedex.js";
+        import { calcularInteracciones } from "./coberturas.js";
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const params = new URLSearchParams(window.location.search);
+            const equipo = [];
+
+            for (let i = 1; i <= 6; i++) {
+                const pokemon = params.get(`pokemon${i}`);
+                if (pokemon && pokemones[pokemon]) {
+                    equipo.push(...pokemones[pokemon]);
+                }
+            }
+
+            console.log("Equipo seleccionado:", equipo);
+
+            if (equipo.length === 0) {
+                console.error("No se seleccionaron Pokémon.");
+                return;
+            }
+
+            const coberturasEquipo = calcularInteracciones(equipo);
+            console.log("Coberturas calculadas:", coberturasEquipo);
+
+            function generarHTMLTipos(objetoTipos) {
+                return Object.entries(objetoTipos).map(([tipo, veces]) => 
+                    `<span class='type-box ${tipo.toLowerCase()}'>${tipo} (${veces})</span>`).join(" ");
+            }
+
+            document.getElementById("pokemonInfo").innerHTML = `
+                <div class="card weakness">
+                    <h2>Debilidades</h2>
+                    <p>${Object.keys(coberturasEquipo.debilidades).length ? generarHTMLTipos(coberturasEquipo.debilidades) : "Ninguna"}</p>
+                </div>
+                <div class="card resistance">
+                    <h2>Resistencias</h2>
+                    <p>${Object.keys(coberturasEquipo.resistencias).length ? generarHTMLTipos(coberturasEquipo.resistencias) : "Ninguna"}</p>
+                </div>
+                <div class="card immunity">
+                    <h2>Inmunidades</h2>
+                    <p>${Object.keys(coberturasEquipo.inmunidades).length ? 
+                        Object.keys(coberturasEquipo.inmunidades).map(tipo => `<span class='type-box ${tipo.toLowerCase()}'>${tipo}</span>`).join(" ")
+                        : "Ninguna"}</p>
+                </div>
+                <div class="card neutral">
+                    <h2>Neutralidades</h2>
+                    <p>${coberturasEquipo.neutralidades?.length ? 
+                        coberturasEquipo.neutralidades.map(tipo => `<span class='type-box ${tipo.toLowerCase()}'>${tipo}</span>`).join(" ") 
+                        : "Ninguna"}</p>
+                </div>
+            `;
+        });
+        
+    </script>
+    <script>
+        function cerrarVentana() {
+            if (window.opener) {
+                window.close();
+            } else {
+                alert("No se puede cerrar esta pestaña automáticamente. Ciérrala manualmente.");
+            }
+        }
+    </script>
+</body>
+</html>
